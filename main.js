@@ -4,20 +4,21 @@ function deepCopy (object) {
 		throw new Error(`argument must be type of object, ${typeof object} given.`);
 	}	
 
-	const newObject = {};
+	const newObject = new object.constructor();
 
 	Object.entries(object).forEach(([propName, propValue]) => {
 
 		if( typeof object[propName] === 'object' ){
 
-			return deepCopy(object[propName]);
+			newObject[propName] = deepCopy(object[propName]);
+		}else{
+			
+			Object.defineProperty(newObject, propName, Object.getOwnPropertyDescriptor(object, propName));
 		}
-
-		Object.defineProperty(newObject, propName, Object.getOwnPropertyDescriptor(object, propName));
-
 	});
 
-	return object;
+
+	return newObject;
 }
 
 const nana = {
